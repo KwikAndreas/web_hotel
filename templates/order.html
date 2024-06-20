@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <style>
+        .room-image {
+            width: 100%;
+            height: auto;
+        }
+        .facilities img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            user-select: none;
+        }
+        .card-img {
+            height: 200px;
+            object-fit: cover;
+        }
+        .form-check{
+            padding: 2px 20px 2px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <img id="roomImage" class="card-img-top" src="{{ url_for('static', filename='foto/kamar/room1.jpg') }}" alt="Room Image">
+                    <div class="card-body">
+                        <h5 class="card-title" id="roomTitle">Tipe Kamar 1</h5>
+                        <p class="card-text" id="roomDescription">Deskripsi tipe kamar 1.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h2>Order Form</h2>
+                <form action="{{ url_for('order') }}" method="post">
+                    <div class="form-group">
+                        <label for="roomType">Tipe Kamar</label>
+                        <select class="form-control" id="roomType" name="roomType" onchange="updateRoomInfo()">
+                            <option value="1" data-image="foto/kamar/room1.jpg" data-title="Tipe Kamar 1" data-description="Deskripsi tipe kamar 1.">Tipe Kamar 1</option>
+                            <option value="2" data-image="foto/kamar/room2.jpg" data-title="Tipe Kamar 2" data-description="Deskripsi tipe kamar 2.">Tipe Kamar 2</option>
+                            <option value="3" data-image="foto/kamar/room3.jpg" data-title="Tipe Kamar 3" data-description="Deskripsi tipe kamar 3.">Tipe Kamar 3</option>
+                            <option value="4" data-image="foto/kamar/room4.jpg" data-title="Tipe Kamar 4" data-description="Deskripsi tipe kamar 4.">Tipe Kamar 4</option>
+                            <option value="5" data-image="foto/kamar/room5.jpg" data-title="Tipe Kamar 5" data-description="Deskripsi tipe kamar 5.">Tipe Kamar 5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="facilities">Fasilitas Tambahan</label>
+                        <div class="facilities">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="kolam renang" id="kolamRenang" name="facilities[]">
+                                <label class="form-check-label" for="kolamRenang">
+                                    <img src="{{ url_for('static', filename='foto/kolam.jpg') }}" alt="Kolam Renang"> Kolam Renang (+Rp 50.000)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="gym" id="gym" name="facilities[]">
+                                <label class="form-check-label" for="gym">
+                                    <img src="{{ url_for('static', filename='foto/gym.jpg') }}" alt="Gym"> Gym (+Rp 100.000)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="breakfast" id="breakfast" name="facilities[]">
+                                <label class="form-check-label" for="breakfast">
+                                    <img src="{{ url_for('static', filename='foto/breakfast.jpg') }}" alt="Breakfast"> Breakfast (+Rp 250.000)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="spa" id="spa" name="facilities[]">
+                                <label class="form-check-label" for="spa">
+                                    <img src="{{ url_for('static', filename='foto/spa.jpg') }}" alt="Spa"> Spa (+Rp 400.000)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="adults">Jumlah Dewasa</label>
+                        <input type="number" class="form-control" id="adults" name="adults" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="children">Jumlah Anak-anak / Lansia</label>
+                        <input type="number" class="form-control" id="children" name="children" min="0" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Pesan Sekarang</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script>
+        function updateRoomInfo() {
+            var roomTypeSelect = document.getElementById('roomType');
+            var selectedOption = roomTypeSelect.options[roomTypeSelect.selectedIndex];
+
+            var roomImage = document.getElementById('roomImage');
+            var roomTitle = document.getElementById('roomTitle');
+            var roomDescription = document.getElementById('roomDescription');
+            
+            roomImage.src = "{{ url_for('static', filename='/foto/kamar') }}" + selectedOption.getAttribute('data-image');
+            roomTitle.textContent = selectedOption.getAttribute('data-title');
+            roomDescription.textContent = selectedOption.getAttribute('data-description');
+        }
+    </script>
+</body>
+</html>

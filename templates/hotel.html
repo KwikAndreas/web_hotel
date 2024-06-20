@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotelku</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}"
+    />
+    <style>
+      .room-section {
+        padding: 20px;
+        border-bottom: 1px solid #ddd;
+      }
+      .room-img {
+        width: 100%;
+        height: auto;
+      }
+      .btn-book {
+        float: right;
+      }
+      .jarak {
+        align-items: center;
+        padding: 12px 0px 12px 0px;
+      }
+      .brand{
+        color: #007bff;
+      }
+      h1{
+        text-align: center;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="my-4"><span class="brand">Hotel</span>Ku</h1>
+      <div class="room-section row">
+        <div class="col-md-4">
+          <img
+            src="{{ url_for('static', filename='foto/room1.jpg') }}"
+            alt="Room 1"
+            class="room-img"
+          />
+        </div>
+        <div class="col-md-8">
+          <h2>Room Type 1</h2>
+          <p>Harga mulai dari Rp 1,000,000</p>
+          <p>Description of Room Type 1...</p>
+          <a
+            href="{{ url_for('order', room_type=1) }}"
+            class="btn btn-primary btn-book"
+            >Pesan Sekarang</a
+          >
+        </div>
+      </div>
+      <div class="room-section row">
+        <div class="col-md-4">
+          <img
+            src="{{ url_for('static', filename='foto/room2.jpg') }}"
+            alt="Room 2"
+            class="room-img"
+          />
+        </div>
+        <div class="col-md-8">
+          <h2>Room Type 2</h2>
+          <p>Harga mulai dari Rp 2,000,000</p>
+          <p>Description of Room Type 2...</p>
+          <a
+            href="{{ url_for('order', room_type=2) }}"
+            class="btn btn-primary btn-book"
+            >Pesan Sekarang</a
+          >
+        </div>
+      </div>
+      <div class="room-section row">
+        <div class="col-md-4">
+          <img
+            src="{{ url_for('static', filename='foto/room3.jpg') }}"
+            alt="Room 3"
+            class="room-img"
+          />
+        </div>
+        <div class="col-md-8">
+          <h2>Room Type 3</h2>
+          <p>Harga mulai dari Rp 3,000,000</p>
+          <p>Description of Room Type 3...</p>
+          <a
+            href="{{ url_for('order', room_type=3) }}"
+            class="btn btn-primary btn-book"
+            >Pesan Sekarang</a
+          >
+        </div>
+      </div>
+      <div class="room-section row">
+        <div class="col-md-4">
+          <img
+            src="{{ url_for('static', filename='foto/room4.jpg') }}"
+            alt="Room 4"
+            class="room-img"
+          />
+        </div>
+        <div class="col-md-8">
+          <h2>King Bed Deluxe</h2>
+          <p>Harga mulai dari Rp 4,000,000</p>
+          <p>Description of Room Type 4...</p>
+          <a
+            href="{{ url_for('order', room_type=4) }}"
+            class="btn btn-primary btn-book"
+            >Pesan Sekarang</a
+          >
+        </div>
+      </div>
+      <div class="room-section row">
+        <div class="col-md-4">
+          <img
+            src="{{ url_for('static', filename='foto/room5.jpg') }}"
+            alt="Room 5"
+            class="room-img"
+          />
+        </div>
+        <div class="col-md-8">
+          <h2>Room Type 5</h2>
+          <p>PHarga mulai dari Rp 5,000,000</p>
+          <p>Description of Room Type 5...</p>
+          <a
+            href="{{ url_for('order', room_type=5) }}"
+            class="btn btn-primary btn-book"
+            >Pesan Sekarang</a
+          >
+        </div>
+      </div>
+      <div class="jarak">
+        <a
+          href="{{ url_for('logout') }}"
+          class="btn btn-primary"
+          style="background-color: #ff3030"
+          role="button"
+          >Log Out</a
+        >
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Website Admin Hotel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <!-- Tambahkan jsPDF Library -->
+    <script src="{{ url_for('static', filename='js/jspdf.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jspdf.plugin.autotable.min.js') }}"></script>
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Data<span style="color: red"> Pesanan Hotel</span></h2>
+        
+        <!-- Input untuk pencarian -->
+        <div class="mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Cari berdasarkan Invoice atau Nama Pemesan">
+        </div>
+        
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Invoice</th>
+                    <th>Nama Pemesan</th>
+                    <th>Tipe Kamar</th>
+                    <th>Jumlah Dewasa</th>
+                    <th>Jumlah Anak/Lansia</th>
+                    <th>Fasilitas</th>
+                    <th>Total Biaya</th>
+                    <th width="15%">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in container %}
+                <tr>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                    <td>{{ row[6] }}</td>
+                    <td style="text-align: right;">{{ "{:,.2f}".format(row[7]) }}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="#" class="btn btn-secondary print-btn" data-invoice="{{ row[1] }}">Print</a>
+                            <a href="{{ url_for('edit', invoice=row[1]) }}" class="btn btn-warning" role="button">Ubah</a>
+                            <a href="{{ url_for('hapus', invoice=row[1]) }}" class="btn btn-danger" role="button" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Pagination -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" id="previous"><a class="page-link" href="#">Sebelumnya</a></li>
+                <li class="page-item" id="page1"><button class="page-link btn btn-link">1</button></li>
+                <li class="page-item" id="page2"><button class="page-link btn btn-link">2</button></li>
+                <li class="page-item" id="page3"><button class="page-link btn btn-link">3</button></li>
+                <li class="page-item" id="next"><a class="page-link" href="#">Selanjutnya</a></li>
+            </ul>
+        </nav>
+        
+        <a href="{{ url_for('order') }}" class="btn btn-primary" role="button">Order Room</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-primary" style="background-color: #ff3030" role="button">Log Out</a>
+    </div>
+    
+    <!-- JavaScript untuk Bootstrap -->
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    
+    <script>
+        var currentPage = 1;
+        var itemsPerPage = 4;
+        var totalRows = document.querySelectorAll('tbody tr').length;
+
+        function displayData(page) {
+            var startIndex = (page - 1) * itemsPerPage;
+            var endIndex = startIndex + itemsPerPage;
+
+            var rows = document.querySelectorAll('tbody tr');
+            for (var i = 0; i < rows.length; i++) {
+                if (i >= startIndex && i < endIndex) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+
+        function updatePaginationButtons() {
+            var totalPages = Math.ceil(totalRows / itemsPerPage);
+            var page1 = document.getElementById('page1');
+            var page2 = document.getElementById('page2');
+            var page3 = document.getElementById('page3');
+
+            if (currentPage <= 3) {
+                page1.innerHTML = '<button class="page-link btn btn-link">1</button>';
+                page2.innerHTML = '<button class="page-link btn btn-link">2</button>';
+                page3.innerHTML = '<button class="page-link btn btn-link">3</button>';
+            } else {
+                page1.innerHTML = '<button class="page-link btn btn-link">' + (currentPage - 1) + '</button>';
+                page2.innerHTML = '<button class="page-link btn btn-link">' + currentPage + '</button>';
+                page3.innerHTML = '<button class="page-link btn btn-link">' + (currentPage + 1) + '</button>';
+            }
+        }
+
+        displayData(currentPage);
+        updatePaginationButtons();
+
+        document.getElementById('previous').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayData(currentPage);
+                updatePaginationButtons();
+            }
+        });
+
+        document.getElementById('next').addEventListener('click', function() {
+            if (currentPage < Math.ceil(totalRows / itemsPerPage)) {
+                currentPage++;
+                displayData(currentPage);
+                updatePaginationButtons();
+            }
+        });
+
+        document.getElementById('page1').addEventListener('click', function() {
+            currentPage = parseInt(this.textContent);
+            displayData(currentPage);
+            updatePaginationButtons();
+        });
+
+        document.getElementById('page2').addEventListener('click', function() {
+            currentPage = parseInt(this.textContent);
+            displayData(currentPage);
+            updatePaginationButtons();
+        });
+
+        document.getElementById('page3').addEventListener('click', function() {
+            currentPage = parseInt(this.textContent);
+            displayData(currentPage);
+            updatePaginationButtons();
+        });
+
+        // Fungsi pencarian
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var searchText = this.value.toLowerCase();
+            var rows = document.querySelectorAll('tbody tr');
+            for (var i = 0; i < rows.length; i++) {
+                var rowText = rows[i].textContent.toLowerCase();
+                if (rowText.includes(searchText)) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+            currentPage = 1; // Reset ke halaman pertama setelah pencarian
+            updatePaginationButtons();
+        });
+
+        // Fungsi untuk print ke pdf
+        function printToPDF(invoice) {
+            // Mengambil data pesanan dari server berdasarkan invoice
+            fetch(`/get_order_data/${invoice}`)
+            .then(response => response.json())
+            .then(data => {
+                var doc = new jsPDF();
+                doc.text(20, 20, 'Data Pesanan Hotel');
+                
+                // Menambahkan data ke PDF berdasarkan data pesanan yang diperoleh
+                doc.text(20, 40, `Invoice: ${data.invoice}`);
+                doc.text(20, 50, `Nama Pemesan: ${data.nama_pemesan}`);
+                doc.text(20, 60, `Tipe Kamar: ${data.tipe_kamar}`);
+                doc.text(20, 70, `Jumlah Dewasa: ${data.jumlah_dewasa}`);
+                doc.text(20, 80, `Jumlah Anak/Lansia: ${data.jumlah_anak_lansia}`);
+                doc.text(20, 90, `Fasilitas: ${data.fasilitas}`);
+                doc.text(20, 100, `Total Biaya: ${data.total_biaya}`);
+                        
+                // Generate pratinjau PDF sebelum menyimpan
+                var pdfOutput = doc.output('datauristring');
+                
+                // Tampilkan pratinjau PDF dalam jendela baru
+                var iframe = "<iframe width='100%' height='100%' src='" + pdfOutput + "'></iframe>";
+                var x = window.open();
+                x.document.open();
+                x.document.write(iframe);
+                x.document.close();
+                
+                // Simpan PDF
+                doc.save('DetailPesananHotel.pdf');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Event Listener untuk tombol Print
+        var printButtons = document.querySelectorAll('.print-btn');
+        printButtons.forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                var invoice = this.getAttribute('data-invoice'); // Ambil Invoice dari atribut data-invoice tombol
+                printToPDF(invoice);
+            });
+        });        
+    </script>
+</body>
+</html>
